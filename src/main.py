@@ -1,5 +1,6 @@
 # src/main.py
 
+import os
 import threading
 import shlex
 
@@ -20,7 +21,7 @@ def run_scheduler(scheduler):
 
 def main():
     config = Config()
-    github_client = GitHubClient(config.github_token)
+    github_client = GitHubClient(os.getenv("GITHUB_TOKEN"))
     notifier = Notifier(config.notification_settings)
     llm = LLM()
     report_generator = ReportGenerator(llm)

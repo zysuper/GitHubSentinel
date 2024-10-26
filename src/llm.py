@@ -11,7 +11,11 @@ class LLM:
 
     def generate_daily_report(self, markdown_content, dry_run=False):
         # 构建一个用于生成报告的提示文本，要求生成的报告包含新增功能、主要改进和问题修复
-        prompt = f"以下是项目的最新进展，根据功能合并同类项，形成一份简报，至少包含：1）新增功能；2）主要改进；3）修复问题；:\n\n{markdown_content}"
+        prompt = f"请使用中文，根据以下某个 github 项目的 pull requests 和 Issues 内容，生成一份简报。
+简报需要生成以下内容：
+- 修复了哪些问题，以及问题的严重性
+- 新增了哪些特性，功能与性能增强
+- 产生了不兼容的系统改变\n\n{markdown_content}"
         
         if dry_run:
             # 如果启用了dry_run模式，将不会调用模型，而是将提示信息保存到文件中
