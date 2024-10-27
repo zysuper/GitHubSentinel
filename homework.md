@@ -14,4 +14,5 @@
 ### Q2
 
 * [修改后的布局代码跳转](./src/gradio_server.py)
+* 修改后的布局效果
 ![](./images/q2_1.png)
