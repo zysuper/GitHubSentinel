@@ -1,22 +1,51 @@
 你接下来收到的都是开源项目的最新进展。
 
-你根据进展，总结成一个中文的报告，以 项目名称和日期 开头，包含：新增功能、主要改进，修复问题等章节。
+你根据进展，总结成一个中文的报告，简报需要生成以下内容：
+- 修复了哪些问题，以及问题的严重性
+- 新增了哪些特性，功能与性能增强
+- 产生了不兼容的系统改变
 
 参考示例如下:
-
 # LangChain 项目进展
 
-## 时间周期：2024-08-13至2024-08-18
+## 时间周期： 2024-08-13 至 2024-08-18
 
-## 新增功能
-- langchain-box: 添加langchain box包和DocumentLoader
-- 添加嵌入集成测试
+------
 
-## 主要改进
-- 将@root_validator用法升级以与pydantic 2保持一致
-- 将根验证器升级为与pydantic 2兼容
+### 修复的主要问题
 
-## 修复问题
-- 修复Azure的json模式问题
-- 修复Databricks Vector Search演示笔记本问题
-- 修复Microsoft Azure Cosmos集成测试中的连接字符串问题
+1. **多代理监督示例错误**
+   - **严重性:** 高
+   - **描述:** 多代理监督示例在使用 ChatOllama 时遇到问题，当使用两个系统消息时发生中断，怀疑是 ChatOllama 对系统消息处理的不兼容性导致 ([#27656](https://github.com/langchain-ai/langchain/issues/27656))。
+2. **AzureSearch 错误**
+   - **严重性:** 中
+   - **描述:** AzureSearch 功能出现错误，影响了数据查询的正常使用 ([#27643](https://github.com/langchain-ai/langchain/issues/27643))。
+3. **FAISS 本地保存错误**
+   - **严重性:** 中
+   - **描述:** FAISS 在保存本地数据时出现了与 `__pydantic_private__` 属性相关的错误，影响数据存储功能 ([#27625](https://github.com/langchain-ai/langchain/issues/27625))。
+
+------
+
+### 新增功能与性能增强
+
+1. **平台集成**
+   - **新增 Writer 集成:** 实现对 Writer 平台的兼容性支持 ([#27646](https://github.com/langchain-ai/langchain/pull/27646))。
+   - **新增 ObjectBox 向量存储支持:** 引入 ObjectBox 作为向量存储选项，扩展了系统的数据存储能力 ([#27644](https://github.com/langchain-ai/langchain/pull/27644))。
+   - **新增 Cloudflare Workers AI 支持:** 添加了 `ChatModels` 的封装器，以支持 Cloudflare Workers AI 的集成 ([#27645](https://github.com/langchain-ai/langchain/pull/27645))。
+2. **功能增强**
+   - **Pebblo 语义上下文功能:** 在 PebbloRetrievalQA 中引入基于策略的语义上下文，提升了检索与查询的智能化 ([#27581](https://github.com/langchain-ai/langchain/pull/27581))。
+   - **Neo4j 初始包支持:** 增加对 neo4j 的初始包集成，丰富了数据的语义查询能力 ([#27582](https://github.com/langchain-ai/langchain/pull/27582))。
+3. **文档与持续集成改进**
+   - **自动运行指南:** 改进了持续集成中的文档测试流程，现在可以在 CI 中自动运行操作指南，以保证文档的准确性 ([#27615](https://github.com/langchain-ai/langchain/pull/27615))。
+   - **新增链接检查:** 在文档中新增了链接检查功能，以确保无损坏链接 ([#27614](https://github.com/langchain-ai/langchain/pull/27614))。
+
+------
+
+### 不兼容的系统改变
+
+1. **数据库兼容性更新**
+   - **影响:** 由于 SQLAlchemy 2.0.36 的更新，导致一些单元测试失败，因此在特定配置下可能需要进行兼容性调整 ([#27627](https://github.com/langchain-ai/langchain/issues/27627))。
+2. **工具错误管理变更**
+   - **影响:** 核心库的补丁新增了对工具错误处理的支持，现在允许使用 Exception 元组来处理工具相关错误，这可能对使用定制错误管理逻辑的用户产生影响 ([#27547](https://github.com/langchain-ai/langchain/pull/27547))。
+3. **OpenSSL 依赖问题**
+   - **影响:** 由于 OpenSSL 在 HuggingFaceEmbeddings 加载中的依赖问题，部分依赖 OpenSSL 的模型可能在不更新 OpenSSL 的情况下无法正常工作 ([#27624](https://github.com/langchain-ai/langchain/issues/27624))。
