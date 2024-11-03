@@ -7,11 +7,43 @@ class LLM:
     def __init__(self):
         # 创建一个OpenAI客户端实例
         self.client = OpenAI()
+
+    def generate_hackernews_report(self, markdown_content, dry_run=False):
+        # 从prompt.txt文件读取系统提示词
+        with open("prompts/hacknews_prompt.txt", "r", encoding='utf-8') as f:
+            system_prompt = f.read()
+
+        # 构建提示信息
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": markdown_content},
+        ]
+
+        if dry_run:
+            LOG.info("Dry run mode enabled. Saving prompt to file.")
+            with open("daily_progress/hackernews/prompt.txt", "w+") as f:
+                json.dump(messages, f, indent=4, ensure_ascii=False)
+            LOG.debug("Prompt已保存到 daily_progress/hackernews/prompt.txt")
+            return "DRY RUN"
+
+        LOG.info("使用 GPT 模型开始生成 HackerNews 趋势报告。")
+        
+        try:
+            response = self.client.chat.completions.create(
+                model="gpt-4o-mini", 
+                messages=messages
+            )
+            LOG.debug("GPT response: {}", response)
+            return response.choices[0].message.content
+        except Exception as e:
+            LOG.error(f"生成 HackerNews 趋势报告时发生错误：{e}")
+            raise
+
+    def generate_daily_report(self, markdown_content, dry_run=False):
         # 从TXT文件加载提示信息
         with open("prompts/report_prompt.txt", "r", encoding='utf-8') as file:
             self.system_prompt = file.read()
 
-    def generate_daily_report(self, markdown_content, dry_run=False):
         # 使用从TXT文件加载的提示信息
         messages = [
             {"role": "system", "content": self.system_prompt},

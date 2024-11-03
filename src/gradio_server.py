@@ -2,6 +2,7 @@ import gradio as gr  # 导入gradio库用于创建GUI
 
 from config import Config  # 导入配置管理模块
 from github_client import GitHubClient  # 导入用于GitHub API操作的客户端
+from hacknews_fetch import report_hackernews_top_stories
 from report_generator import ReportGenerator  # 导入报告生成器模块
 from llm import LLM  # 导入可能用于处理语言模型的LLM类
 from subscription_manager import SubscriptionManager  # 导入订阅管理器
@@ -21,8 +22,13 @@ def export_progress_by_date_range(repo, days):
 
     return report, report_file_path  # 返回报告内容和报告文件路径
 
+def report_hackernews():
+    report_path = report_hackernews_top_stories()
+    report, report_file_path = report_generator.generate_hackernews_report(report_path)
+    return report, report_file_path
+
 # 创建Gradio界面
-demo = gr.Interface(
+github_demo = gr.Interface(
     fn=export_progress_by_date_range,  # 指定界面调用的函数
     title="GitHubSentinel",  # 设置界面标题
     inputs=[
@@ -34,6 +40,15 @@ demo = gr.Interface(
     ],
     outputs=[gr.Markdown(), gr.File(label="下载报告")],  # 输出格式：Markdown文本和文件下载
 )
+
+hackernews_demo = gr.Interface(
+    fn=report_hackernews,
+    title="HackerNews 日报",
+    inputs=[],
+    outputs=[gr.Markdown(), gr.File(label="下载报告")],
+)
+
+demo = gr.TabbedInterface([github_demo, hackernews_demo], ["GitHub 日报", "HackerNews 日报"])
 
 if __name__ == "__main__":
     demo.launch(share=True, server_name="0.0.0.0")  # 启动界面并设置为公共可访问

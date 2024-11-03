@@ -3,6 +3,7 @@
 import argparse
 
 import argparse  # 导入argparse库，用于处理命令行参数解析
+from hacknews_fetch import report_hackernews_top_stories
 
 class CommandHandler:
     def __init__(self, github_client, subscription_manager, report_generator):
@@ -50,6 +51,11 @@ class CommandHandler:
         parser_generate.add_argument('file', type=str, help='The markdown file to generate report from')
         parser_generate.set_defaults(func=self.generate_daily_report)
 
+        # 生成 hackernews 日报命令
+        parser_generate_hackernews = subparsers.add_parser('generate-hn', help='Generate HackerNews report from markdown file')
+        parser_generate_hackernews.add_argument('file', type=str, help='The markdown file to generate report from')
+        parser_generate_hackernews.set_defaults(func=self.generate_hackernews_report)
+
         # 帮助命令
         parser_help = subparsers.add_parser('help', help='Show help message')
         parser_help.set_defaults(func=self.print_help)
@@ -72,7 +78,11 @@ class CommandHandler:
             print(f"  - {sub}")
 
     def export_daily_progress(self, args):
-        self.github_client.export_daily_progress(args.repo)
+        # 支持导出 hackernews 日报
+        if args.repo == "hackernews":
+            report_hackernews_top_stories()
+        else:
+            self.github_client.export_daily_progress(args.repo)
         print(f"Exported daily progress for repository: {args.repo}")
 
     def export_progress_by_date_range(self, args):
@@ -82,6 +92,10 @@ class CommandHandler:
     def generate_daily_report(self, args):
         self.report_generator.generate_daily_report(args.file)
         print(f"Generated daily report from file: {args.file}")
+        
+    def generate_hackernews_report(self, args):
+        self.report_generator.generate_hackernews_report(args.file)
+        print(f"Generated HackerNews report from file: {args.file}")
 
     def print_help(self, args=None):
         self.parser.print_help()  # 输出帮助信息
