@@ -18,10 +18,32 @@ class LLM:
             self.api_url = config.ollama_api_url  # 设置Ollama API的URL
         else:
             raise ValueError(f"Unsupported model type: {self.model}")  # 如果模型类型不支持，抛出错误
-        
-        # 从TXT文件加载系统提示信息
-        with open("prompts/report_prompt.txt", "r", encoding='utf-8') as file:
-            self.system_prompt = file.read()
+    def generate_hackernews_report(self, markdown_content, dry_run=False):
+        # 从prompt.txt文件读取系统提示词
+        with open("prompts/hacknews_prompt.txt", "r", encoding='utf-8') as f:
+            system_prompt = f.read()
+
+        # 构建提示信息
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": markdown_content},
+        ]
+
+        if dry_run:
+            LOG.info("Dry run mode enabled. Saving prompt to file.")
+            with open("daily_progress/hackernews/prompt.txt", "w+") as f:
+                json.dump(messages, f, indent=4, ensure_ascii=False)
+            LOG.debug("Prompt已保存到 daily_progress/hackernews/prompt.txt")
+            return "DRY RUN"
+
+        LOG.info("使用 GPT 模型开始生成 HackerNews 趋势报告。")
+
+        if self.model == "openai":
+            return self._generate_report_openai(messages)
+        elif self.model == "ollama":
+            return self._generate_report_ollama(messages)
+        else:
+            raise ValueError(f"Unsupported model type: {self.model}")
 
     def generate_daily_report(self, markdown_content, dry_run=False):
         """
@@ -31,6 +53,9 @@ class LLM:
         :param dry_run: 如果为True，提示信息将保存到文件而不实际调用模型。
         :return: 生成的报告内容或"DRY RUN"字符串。
         """
+        # 从TXT文件加载系统提示信息
+        with open("prompts/report_prompt.txt", "r", encoding='utf-8') as file:
+            self.system_prompt = file.read()
         # 准备消息列表，包含系统提示和用户内容
         messages = [
             {"role": "system", "content": self.system_prompt},
