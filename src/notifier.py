@@ -7,6 +7,17 @@ from logger import LOG
 class Notifier:
     def __init__(self, email_settings):
         self.email_settings = email_settings
+
+    def notify_civitai_report(self, repo, report):
+        """
+        发送 Civitai 热门AI绘画模型报告邮件
+        :param report: 报告内容
+        """
+        if self.email_settings:
+            subject = f"[civitai] {repo} 进展简报"
+            self.send_email(subject, report)
+        else:
+            LOG.warning("邮件设置未配置正确，无法发送 GitHub 报告通知")
     
     def notify_github_report(self, repo, report):
         """
