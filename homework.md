@@ -21,8 +21,8 @@
 
 ### Gradio 服务
 
-[跳转 Gradio 服务修改点1](./src/gradio_server.py#L35)
-[跳转 Gradio 服务修改点2](./src/gradio_server.py#L132)
+- [跳转 Gradio 服务修改点1](./src/gradio_server.py#L35)
+- [跳转 Gradio 服务修改点2](./src/gradio_server.py#L132)
 
 ![alt text](imgs/gradio.png)
 
