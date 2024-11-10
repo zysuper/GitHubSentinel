@@ -89,7 +89,7 @@ def main():
     # 安排 hn_daily_job 每天早上10点执行一次
     schedule.every().day.at("10:00").do(hn_daily_job, hacker_news_client, report_generator, notifier)
 
-    # 安排 civitai_job 每4小时执行一次，从0点开始
+    # 安排 civitai_job 每天早上7点执行一次
     schedule.every().day.at("07:00").do(civitai_job, civitai_client, report_generator, notifier, "Day", limit=3)
 
     try:

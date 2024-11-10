@@ -7,6 +7,10 @@
 
 实现了 Civitai 热门AI绘画模型报告生成，并完成了单元测试代码。
 
+## civitai 客户端
+
+[跳转 Civitai 客户端实现](./src/civitai_client.py)
+
 ### 测试用例
 
 [跳转 Civitai 客户端测试用例](./tests/test_civitai_client.py)
@@ -15,7 +19,8 @@
 
 ### Daemon Service
 
-[跳转 Daemon Service 修改点](./src/daemon_process.py#L36)
+[跳转 Daemon Service 修改点1](./src/daemon_process.py#L36)
+[跳转 Daemon Service 修改点2](./src/daemon_process.py#L92)
 
 ![alt text](imgs/daemon_service.png)
 
